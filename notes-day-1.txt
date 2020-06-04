@@ -1,0 +1,26 @@
+
+
+
+gradlew cloudNativeDeveloperSimpleApp -PserverUrl=https://pal-tracker-agile-possum.cfapps.io
+
+./gradlew  cloudNativeDeveloperCloudFoundry -PserverUrl=http://pal-tracker-lean-porcupine.cfapps.io/
+
+
+dotnet publish src/PalTracker --configuration Release
+ 
+ "auth_domain": "https://dell-emc-pal.login.run.pivotal.io",
+            "grant_types": [
+              "client_credentials"
+            ],
+            "client_secret": "ffa9c594-78fd-4138-8b23-d54ec8578975",
+            "client_id": "827ee819-0b66-4db9-b2c1-bc149350153e"
+
+curl -k 'https://p-identity.login.https://dell-emc-pal.login.run.pivotal.io/oauth/token' -i -u 827ee819-0b66-4db9-b2c1-bc149350153e:ffa9c594-78fd-4138-8b23-d54ec8578975 -X POST -H 'Accept: application/json' -H 'Content-Type: application/x-www-form-urlencoded' -d 'grant_type=client_credentials&response_type=token'
+
+
+curl -k 'https://p-identity.login.YOUR_CF_SYS_URL/oauth/token' -i -u 'YOUR_CLIENT_ID:YOUR_CLIENT_SECRET' -X POST -H 'Accept: application/json' -H 'Content-Type: application/x-www-form-urlencoded' -d 'grant_type=client_credentials&response_type=token'
+
+
+git remote add origin git@github.com:<your-github-username>/tracker-config.git
+
+git remote add origin git@github.com:/tracker-config.git

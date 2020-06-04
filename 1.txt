@@ -1,0 +1,45 @@
+./gradlew dotnetCloudNativeDeveloperDistributedSystemWithCircuitBreaker  \
+    -PregistrationServerUrl=https://registration-aa.cfapps.io \
+    -PbacklogServerUrl=https://backlog-aa.cfapps.io \
+    -PallocationsServerUrl=https://allocations-aa.cfapps.io \
+    -PtimesheetsServerUrl=https://timesheets-aa.cfapps.io
+
+--------------------------------------------------------------------------------
+./gradlew dotnetCloudNativeDeveloperDistributedSystemWithSecurity \
+    -PregistrationServerUrl=https://registration-aa.cfapps.io \
+    -PbacklogServerUrl=https://backlog-aa.cfapps.io \
+    -PallocationsServerUrl=https://allocations-aa.cfapps.io \
+    -PtimesheetsServerUrl=https://timesheets-aa.cfapps.io \
+    -PuaaUrl=https://dell-emc-pal.login.run.pivotal.io \
+    -PclientId=827ee819-0b66-4db9-b2c1-bc149350153e \
+    -PclientSecret=ffa9c594-78fd-4138-8b23-d54ec8578975
+
+
+./gradlew dotnetCloudNativeDeveloperDistributedSystemWithConfigServer \
+    -PregistrationServerUrl=https://registration-aa.cfapps.io \
+    -PbacklogServerUrl=https://backlog-aa.cfapps.io \
+    -PallocationsServerUrl=https://allocations-aa.cfapps.io \
+    -PtimesheetsServerUrl=https://timesheets-aa.cfapps.io \
+    -PuaaUrl=https://dell-emc-pal.login.run.pivotal.io \
+    -PclientId=827ee819-0b66-4db9-b2c1-bc149350153e \
+    -PclientSecret=ffa9c594-78fd-4138-8b23-d54ec8578975
+
+
+./gradlew dotnetCloudNativeDeveloperDistributedSystemWithSecurity \
+    -PregistrationServerUrl=https://registration-aa.cfapps.io \
+    -PbacklogServerUrl=https://backlog-aa.cfapps.io \
+    -PallocationsServerUrl=https://allocations-aa.cfapps.io \
+    -PtimesheetsServerUrl=https://timesheets-aa.cfapps.io \
+
+
+using Microsoft.Extensions.Logging;
+using Steeltoe.CircuitBreaker.Hystrix;
+
+
+var logger = sp.GetService<ILogger<ProjectClient>>();
+return new ProjectClient(httpClient, logger);
+
+services.AddHystrixMetricsStream(Configuration);
+
+app.UseHystrixMetricsStream();
+app.UseHystrixRequestContext();

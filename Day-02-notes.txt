@@ -1,0 +1,24 @@
+create a route 1 for each app
+it has to be unique
+
+   pal-tracker
+ pal-tracker-beta.cfapps.io     
+
+  pal-tracker-prod  pal-tracker-beta-prod.cfapps.io
+
+
+
+./gradlew cloudNativeDeveloperPipelines -PreviewUrl=https://pal-tracker-beta.cfapps.io -PproductionUrl=https://pal-tracker-beta-prod.cfapps.io
+----------------------------------------------------------------------------------------------------------------------------------------
+come to the main room and submit assignment later..ok
+
+
+./gradlew cloudNativeDeveloperRest -PserverUrl=https://pal-tracker-beta.cfapps.io
+./gradlew cloudNativeDeveloperDatabaseMigrations -PserverUrl=https://pal-tracker-beta.cfapps.io
+./gradlew cloudNativeDeveloperDatabaseAccess -PserverUrl=https://pal-tracker-beta.cfapps.io
+./gradlew cloudNativeDeveloperHealthMonitoring -PserverUrl=https://pal-tracker-beta.cfapps.io/actuator
+
+
+curl -kLi -X PUT -H "Content-Type: application/json" pal-tracker-lean-porcupine.cfapps.io/time-entries/1 -d "{\"projectId\": 88, \"userId\": 99, \"date\": \"2019-01-01\", \"hours\": 8}"
+
+curl -kLi -X DELETE -H "Content-Type: application/json" pal-tracker-lean-porcupine.cfapps.io/time-entries/1

@@ -1,0 +1,147 @@
+
+
+dotnet add Applications/AllocationsServer package Steeltoe.Extensions.Configuration.ConfigServerCore --version 2.4.2
+dotnet add Applications/BacklogServer package Steeltoe.Extensions.Configuration.ConfigServerCore --version 2.4.2
+dotnet add Applications/TimesheetsServer package Steeltoe.Extensions.Configuration.ConfigServerCore --version 2.4.2
+dotnet add Applications/RegistrationServer package Steeltoe.Extensions.Configuration.ConfigServerCore --version 2.4.2
+=====================================
+SECURITY USING oAuth
+=====================================
+dotnet add Applications/AllocationsServer package Steeltoe.Security.Authentication.CloudFoundryCore --version 2.3.0
+dotnet add Applications/BacklogServer package Steeltoe.Security.Authentication.CloudFoundryCore --version 2.3.0
+dotnet add Applications/TimesheetsServer package Steeltoe.Security.Authentication.CloudFoundryCore --version 2.3.0
+dotnet add Applications/RegistrationServer package Steeltoe.Security.Authentication.CloudFoundryCore --version 2.3.0
+
+
+   "spring": {
+       "application": {
+           "name": "allocations-server"
+       },
+       "cloud": {
+           "config": {
+               "failFast" : true,
+               "uri": "http://localhost:8888"
+           }
+       }
+   }
+
+
+
+ AllocationServer, BacklogServer , TimesheetsServer , and RegistrationServer 
+----------------------startup.cs------------------------------
+
+using Microsoft.AspNetCore.Mvc.Authorization;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Steeltoe.Security.Authentication.CloudFoundry;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Http;
+
+under ConfigureServices method
+-----------------------------------
+ services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+
+            services.AddControllers(mvcOptions =>
+            {
+                if (!Configuration.GetValue("DISABLE_AUTH", false))
+                {
+                    // Set Authorized as default policy
+                    var policy = new AuthorizationPolicyBuilder(JwtBearerDefaults.AuthenticationScheme)
+                        .RequireAuthenticatedUser()
+                        .RequireClaim("scope", "uaa.resource")
+                        .Build();
+                    mvcOptions.Filters.Add(new AuthorizeFilter(policy));
+                }
+            });
+
+            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+            .AddCloudFoundryJwtBearer(Configuration);
+
+REPLACE >>>>> return new ProjectClient(httpClient, logger); with below line
+
+                var contextAccessor = sp.GetService<IHttpContextAccessor>();
+                return new ProjectClient(
+                    httpClient, logger,
+                    () => contextAccessor.HttpContext.GetTokenAsync("access_token")
+                );
+
+under Update ProjectClient for OAuth
+--------------------------------------------
+do for all 3:  AllocationServer, BacklogServer, and TimesheetsServer.
+???Question to DJ, if we need changes for Project lcinet for Resgistration Server also
+
+
+====================================
+Update the integration test to disable authentication.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-========================================================
+dotnet add Applications/AllocationsServer package Steeltoe.Discovery.ClientCore --version 2.4.2
+
+dotnet add Applications/AllocationsServer package Steeltoe.Extensions.Configuration.CloudFoundryCore --version 2.4.2
+
+dotnet add Applications/AllocationsServer package Steeltoe.Common.Hosting --version 2.4.2
+
+
+dotnet add Applications/BacklogServer package Steeltoe.Discovery.ClientCore --version 2.4.2
+
+dotnet add Applications/BacklogServer package Steeltoe.Extensions.Configuration.CloudFoundryCore --version 2.4.2
+
+dotnet add Applications/BacklogServer package Steeltoe.Common.Hosting --version 2.4.2
+
+
+dotnet add Applications/RegistrationServer package Steeltoe.Discovery.ClientCore --version 2.4.2
+
+dotnet add Applications/RegistrationServer package Steeltoe.Extensions.Configuration.CloudFoundryCore --version 2.4.2
+
+dotnet add Applications/RegistrationServer package Steeltoe.Common.Hosting --version 2.4.2
+
+
+dotnet add Applications/TimesheetsServer package Steeltoe.Discovery.ClientCore --version 2.4.2
+
+dotnet add Applications/TimesheetsServer package Steeltoe.Extensions.Configuration.CloudFoundryCore --version 2.4.2
+
+dotnet add Applications/TimesheetsServer package Steeltoe.Common.Hosting --version 2.4.2
+
+------------------------------------------
+
+dotnet add Components/Allocations package Steeltoe.CircuitBreaker.HystrixCore --version 2.4.2
+
+dotnet add Components/Allocations package Steeltoe.CircuitBreaker.Hystrix.MetricsEventsCore --version 2.4.2
+
+dotnet add Components/Backlog package Steeltoe.CircuitBreaker.HystrixCore --version 2.4.2
+
+dotnet add Components/Backlog package Steeltoe.CircuitBreaker.Hystrix.MetricsEventsCore --version 2.4.2
+
+dotnet add Components/Timesheets package Steeltoe.CircuitBreaker.HystrixCore --version 2.4.2
+
+dotnet add Components/Timesheets package Steeltoe.CircuitBreaker.Hystrix.MetricsEventsCore --version 2.4.2
+
+
+
+
+    "eureka": {
+         "client": {
+              "serviceUrl": "http://localhost:8761/eureka/",
+              "shouldRegisterWithEureka": false,
+              "shouldFetchRegistry": true
+          }
+       },
+      "REGISTRATION_SERVER_ENDPOINT": "http://registration-service"
